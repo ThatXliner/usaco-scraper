@@ -1,3 +1,5 @@
+import ssl
+import certifi
 import asyncio
 import aiohttp
 from bs4 import BeautifulSoup as Soup
@@ -145,7 +147,11 @@ LIMIT = slice(3, 10)
 
 async def run():
     global session
-    session = aiohttp.ClientSession()
+    session = aiohttp.ClientSession(
+        connector=aiohttp.TCPConnector(
+            ssl=ssl.create_default_context(cafile=certifi.where())
+        )
+    )
     try:
         print("getting links")
         # XXX: limit or else USACO servers die
